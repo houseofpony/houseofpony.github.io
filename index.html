@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>House of Pony – Réservation</title>
+<meta name="description" content="Réserve ta ponytail chez House of Pony : prestations, prix et créneaux disponibles.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Pinyon+Script&family=Jost:wght@300;400;500&display=swap">
+<style>
+/* Layout: one narrow black column like a mobile booking page — hero, conditions, planning, préparation, then the booking steps (prestation → date & heure → infos → récap). */
+:root{
+  --bg:#0b0a0b; --panel:#141214; --line:#3a3539; --fg:#f4f0ec; --muted:#a39b9f; --accent:#d9c2a7; --ok:#9fd3a8; --warn:#e8a598;
+  --display:"Bodoni Moda","Didot","Times New Roman",serif;
+  --script:"Pinyon Script","Snell Roundhand",cursive;
+  --body:"Jost","Helvetica Neue",Arial,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-weight:300;font-size:15px;line-height:1.55;margin:0}
+.wrap{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+h1,h2,h3{font-weight:400;margin:0;text-wrap:balance}
+.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.script{font-family:var(--script);font-weight:400;line-height:1}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+a{color:var(--accent)}
+
+/* hero */
+.hero{position:relative;text-align:center;padding-block:28px 8px;overflow:hidden}
+.hero .eyebrow{display:block;margin-bottom:6px}
+.hero h1{font-family:var(--display);font-size:clamp(54px,17vw,92px);letter-spacing:.04em;line-height:.95}
+.hero .script{display:block;font-size:clamp(38px,11vw,58px);color:var(--accent);margin-top:-14px}
+.hero .sub{font-size:11px;letter-spacing:.5em;text-transform:uppercase;margin-top:8px}
+.portrait{margin:28px auto 0;width:min(230px,62vw);aspect-ratio:3/4;max-width:100%;border-radius:999px 999px 0 0;border:1px solid var(--line);background:radial-gradient(120% 80% at 50% 10%,#2a2427 0%,var(--panel) 60%);display:grid;place-items:center;overflow:hidden}
+.portrait img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
+.intro{display:grid;gap:12px;text-align:center;margin-top:22px}
+.intro h2{font-family:var(--display);font-style:italic;font-size:20px;letter-spacing:.06em;text-transform:uppercase}
+.intro p{margin:0;color:var(--muted);font-size:13.5px;max-width:44ch;margin-inline:auto}
+
+/* section titles */
+.sec{margin-top:52px}
+.sec-title{text-align:center;margin-bottom:22px}
+.sec-title .eyebrow{display:block}
+.sec-title h2{font-family:var(--display);font-size:34px;letter-spacing:.06em;text-transform:uppercase;line-height:1.05}
+.sec-title .script{display:block;font-size:40px;color:var(--accent);margin-top:-6px}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.card{border:1px solid var(--line);background:var(--panel);padding:16px 10px 14px;text-align:center;border-radius:80px 80px 6px 6px;display:grid;align-content:start;gap:8px;min-width:0}
+.card svg{width:28px;height:28px;margin:4px auto 0;stroke:var(--fg)}
+.card h3{font-family:var(--display);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.card p{margin:0;font-size:11.5px;line-height:1.45;color:var(--muted)}
+@media (max-width:430px){.cards{grid-template-columns:1fr}.card{border-radius:6px;text-align:left;grid-template-columns:32px 1fr;column-gap:12px}.card svg{grid-row:span 2;margin:2px 0 0}}
+
+.prep{display:grid;gap:10px;counter-reset:p}
+.prep li{list-style:none;display:grid;grid-template-columns:28px 1fr;gap:10px;font-size:13.5px;color:var(--muted)}
+.prep li::before{counter-increment:p;content:counter(p);font-family:var(--display);font-size:20px;color:var(--fg);line-height:1.1}
+.prep{padding:0;margin:0}
+
+/* booking */
+.book{margin-top:60px;border-top:1px solid var(--line);padding-top:30px}
+.stepbar{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.stepbar h2{font-size:15px;font-weight:500;flex:1;text-align:center}
+.back{background:none;border:0;padding:6px;font-size:20px;line-height:1}
+.back[hidden]+h2{margin-right:32px}
+.cat{font-size:13px;margin:18px 0 6px;color:var(--muted);letter-spacing:.04em}
+.svc{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.svc .info{flex:1;min-width:0}
+.svc .name{font-weight:400;font-size:15px}
+.svc .meta{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.btn{background:var(--fg);color:var(--bg);border:0;padding:9px 14px;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;border-radius:2px;white-space:nowrap}
+.btn.wide{width:100%;padding:15px;font-size:12px}
+.btn.ghost{background:none;color:var(--fg);border:1px solid var(--line)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+
+.picked{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);background:var(--panel);margin-bottom:22px}
+.picked .t{font-weight:400}
+.picked .m{font-size:12.5px;color:var(--muted)}
+.picked button{background:none;border:0;font-size:18px;color:var(--muted);align-self:flex-start}
+.label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:400}
+
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cal-head span{font-size:15px;text-transform:capitalize}
+.cal-head button{background:none;border:0;font-size:18px;padding:4px 10px}
+.cal-head button:disabled{opacity:.25}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-variant-numeric:tabular-nums}
+.cal .dow{font-size:11px;color:var(--muted);padding:6px 0}
+.cal button{background:none;border:0;aspect-ratio:1;max-width:100%;border-radius:50%;font-size:14px}
+.cal button:disabled{color:#4d474b;cursor:default}
+.cal button.sel{background:var(--fg);color:var(--bg)}
+.cal button.today:not(.sel){box-shadow:inset 0 0 0 1px var(--line)}
+.tz{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:center;margin:16px 0 12px}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.slots button{background:none;border:1px solid var(--line);padding:13px 0;font-variant-numeric:tabular-nums;font-size:14px}
+.slots button.sel{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.empty{color:var(--muted);font-size:13.5px;text-align:center;padding:18px 0}
+
+.field{display:grid;gap:4px;margin-bottom:18px}
+.field label{font-size:12.5px;color:var(--muted)}
+.field input,.field textarea{background:none;border:0;border-bottom:1px solid var(--line);color:var(--fg);font:inherit;padding:8px 0;border-radius:0}
+.field textarea{resize:vertical;min-height:60px}
+.err{color:var(--warn);font-size:12.5px;min-height:1em}
+
+.sum{border-top:1px solid var(--line)}
+.sum .row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.sum .row span:first-child{color:var(--muted)}
+.msg{white-space:pre-wrap;background:var(--panel);border:1px solid var(--line);padding:14px;font-size:13px;margin:18px 0 12px;user-select:all}
+.actions{display:grid;gap:10px}
+.note{font-size:12.5px;color:var(--muted);text-align:center;margin-top:10px}
+.toast{color:var(--ok);font-size:13px;text-align:center;min-height:1.2em;margin-top:6px}
+
+/* owner */
+.owner{margin-top:22px;border:1px dashed var(--accent);padding:14px;display:grid;gap:10px}
+.owner h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:500}
+.owner .blk{display:flex;justify-content:space-between;align-items:center;font-size:13px;gap:8px;font-variant-numeric:tabular-nums}
+.owner .blk button{background:none;border:1px solid var(--line);padding:4px 10px;font-size:12px}
+.owner .row2{display:flex;gap:8px;flex-wrap:wrap}
+.status{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
+
+footer{text-align:center;margin-top:60px;color:var(--muted);font-size:12px;display:grid;gap:4px}
+footer .script{font-size:30px;color:var(--fg)}
+@media (prefers-reduced-motion:no-preference){.view{animation:in .35s ease both}@keyframes in{from{opacity:.4;transform:translateY(6px)}}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Bienvenue sur mon site de réservation</span>
+    <h1>HOUSE</h1>
+    <span class="script">of Pony</span>
+    <div class="sub">Hair stylist</div>
+    
+    <div class="intro">
+      <h2>Bienvenue chez House of Pony</h2>
+      <p>Ponytails, buns et demi-têtes réalisés avec soin. Chaque coiffure est pensée pour toi, propre, nette et durable.</p>
+      <p>Avant de réserver, merci de lire les conditions et la préparation ci-dessous.</p>
+    </div>
+  </header>
+
+  <section class="sec" aria-labelledby="t-cond">
+    <div class="sec-title"><span class="eyebrow">Prise de rendez-vous</span><h2 id="t-cond">Conditions</h2></div>
+    <div class="cards">
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <h3>Retards</h3>
+        <p>À partir de 10 minutes de retard, 10 € sont ajoutés au prix. Au-delà de 15 minutes, le rendez-vous est annulé et l'acompte est perdu.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
+        <h3>Annulation</h3>
+        <p>Annulation ou report possible jusqu'à 48 h avant le rendez-vous.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
+        <h3>Acompte</h3>
+        <p>Un acompte non remboursable est demandé pour confirmer ta réservation. Il est déduit du prix total.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="t-plan">
+    <div class="sec-title"><h2 id="t-plan">Planning</h2><span class="script">et lieu</span></div>
+    <div class="cards">
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><path d="M12 21s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <h3>Lieu</h3>
+        <p id="lieu">L'adresse exacte t'est envoyée une fois le rendez-vous confirmé.</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        <h3>Horaires</h3>
+        <p id="horaires"></p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8"/></svg>
+        <h3>Contact</h3>
+        <p>Une question avant de réserver ? Écris-moi sur Instagram <span class="ig"></span>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="t-prep">
+    <div class="sec-title"><h2 id="t-prep">Préparation</h2><span class="script">du rendez-vous</span></div>
+    <ol class="prep">
+      <li>Viens les cheveux lavés, démêlés et bien secs, sans produit lourd.</li>
+      <li>Les mèches ne sont pas fournies : demande-moi la quantité et la longueur avant ton rendez-vous.</li>
+      <li>Envoie-moi une photo de la coiffure souhaitée et une photo de tes cheveux, pour vérifier que ta longueur convient à la prestation.</li>
+      <li>Merci de venir seule, sans accompagnant.</li>
+    </ol>
+  </section>
+
+  <section class="book" id="book" aria-live="polite">
+    <div class="stepbar">
+      <button class="back" id="back" hidden aria-label="Retour">‹</button>
+      <h2 id="stepTitle">Sélectionner un rendez-vous</h2>
+    </div>
+    <div id="view" class="view"></div>
+  </section>
+
+  <footer>
+    <span class="script">House of Pony</span>
+    <span>Ponytails &amp; coiffures sur mesure · <span class="ig"></span></span>
+  </footer>
+</div>
+
+<script>
+// Adresse de l'API Google (Apps Script) qui enregistre les réservations
+const API_URL = "https://script.google.com/macros/s/AKfycbzJSi32cCxxZucKlQGJ9fjxLrVIykysgbJ3jrr-agMxU0VEY_DbZlYlvnTt8B6gAcxl/exec";
+const CONFIG = {"instagram":"houseofpony","openDays":[0,1,2,3,4,5,6],"open":"10:00","close":"19:00","stepMin":30,"bookAheadDays":60,"deposit":15};
+const SERVICES = [
+  { id: "classique",      name: "Ponytail classique",     min: 180, price: 50 },
+  { id: "crown",          name: "Half up crown twist",    min: 180, price: 65 },
+  { id: "bunfrange",      name: "Bun x frange",           min: 180, price: 55 },
+  { id: "ponylace",       name: "Ponylace",               min: 180, price: 60 },
+  { id: "quickwaves",     name: "Demi tête (quickwaves)", min: 180, price: 60 },
+  { id: "ponybun",        name: "Ponytail bun",           min: 180, price: 50 },
+  { id: "demifrange",     name: "Demi tête avec frange",  min: 180, price: 65 },
+  { id: "ponylacefrange", name: "Ponylace frange",        min: 240, price: 65 },
+  { id: "barbie",         name: "Ponytail barbie",        min: 140, price: 50 }
+];
+
+const $ = s => document.querySelector(s);
+const DAYS = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
+const MONTHS = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const dur = m => { const h=Math.floor(m/60), r=m%60; return h+"h"+(r?String(r).padStart(2,"0"):""); };
+const toMin = t => { const [h,m]=t.split(":").map(Number); return h*60+m; };
+const toT = m => String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
+const ymd = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const longDate = d => DAYS[d.getDay()]+" "+d.getDate()+" "+MONTHS[d.getMonth()]+" "+d.getFullYear();
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+document.querySelectorAll(".ig").forEach(e=>e.textContent="@"+CONFIG.instagram);
+(function(){
+  const names = CONFIG.openDays.map(i=>DAYS[i]);
+  const closed = [0,1,2,3,4,5,6].filter(i=>!CONFIG.openDays.includes(i)).map(i=>DAYS[i]);
+  const o = CONFIG.open.replace(":00","h"), c = CONFIG.close.replace(":00","h");
+  $("#horaires").textContent = closed.length ? `Du ${names[0]} au ${names[names.length-1]}, ${o} – ${c}. Fermé le ${closed.join(" et le ")}.` : `Tous les jours, du lundi au dimanche, de ${o} à ${c}.`;
+})();
+
+const state = { step:"svc", svc:null, month:null, date:null, time:null, busy:null, loading:false, error:"", info:{prenom:"",nom:"",tel:"",note:""}, sending:false };
+const today = new Date(); today.setHours(0,0,0,0);
+const maxDay = new Date(today); maxDay.setDate(maxDay.getDate()+CONFIG.bookAheadDays);
+state.month = new Date(today.getFullYear(), today.getMonth(), 1);
+
+function loadBusy(){
+  state.busy = null; state.loading = true; state.error = ""; render();
+  const key = ymd(state.date);
+  fetch(API_URL+"?action=busy&date="+key)
+    .then(r=>r.json())
+    .then(d => { if (!d.ok) throw 0; if (state.date && ymd(state.date)===key){ state.busy=d.busy; state.loading=false; render(); } })
+    .catch(() => { state.loading=false; state.error="Impossible de charger les créneaux. Réessaie dans un instant."; render(); });
+}
+function freeSlots(){
+  if (!state.busy || state.busy==="closed") return [];
+  const out=[], o=toMin(CONFIG.open), c=toMin(CONFIG.close), key=ymd(state.date);
+  const now=new Date(), isToday=ymd(now)===key, nowMin=now.getHours()*60+now.getMinutes()+60;
+  for (let t=o; t+state.svc.min<=c; t+=CONFIG.stepMin){
+    if (isToday && t<nowMin) continue;
+    if (state.busy.some(([s,e]) => t<e && t+state.svc.min>s)) continue;
+    out.push(toT(t));
+  }
+  return out;
+}
+const dayBookable = d => d>=today && d<=maxDay && CONFIG.openDays.includes(d.getDay());
+
+function go(step){ state.step=step; render(); $("#book").scrollIntoView({behavior:"smooth",block:"start"}); }
+$("#back").onclick = () => go({date:"svc",info:"date",recap:"info"}[state.step]);
+
+function pickedBox(withTime){
+  const s = state.svc;
+  return `<div class="picked"><div><div class="t">${esc(s.name)} avec House of Pony</div>
+    <div class="m">${dur(s.min)} à ${s.price},00 €${withTime&&state.date?`<br>${longDate(state.date)} à ${state.time.replace(":","h")}`:""}</div></div>
+    <button aria-label="Changer de prestation" onclick="go('svc')">×</button></div>`;
+}
+
+function render(){
+  const v = $("#view"); v.classList.remove("view"); void v.offsetWidth; v.classList.add("view");
+  $("#back").hidden = state.step==="svc" || state.step==="done";
+  if (state.step==="svc"){
+    $("#stepTitle").textContent = "Sélectionner un rendez-vous";
+    v.innerHTML = `<div class="cat">Ponytails &amp; coiffures</div>` + SERVICES.map(s=>`
+      <div class="svc"><div class="info"><div class="name">${esc(s.name)}</div><div class="meta">${dur(s.min)} à ${s.price},00 €</div></div>
+      <button class="btn" data-id="${s.id}">Programmer</button></div>`).join("");
+    v.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{ state.svc=SERVICES.find(s=>s.id===b.dataset.id); state.time=null; go("date"); });
+  }
+  else if (state.step==="date"){
+    $("#stepTitle").textContent = "Date et heure";
+    const m = state.month, first = new Date(m.getFullYear(), m.getMonth(), 1);
+    const lead = (first.getDay()+6)%7, n = new Date(m.getFullYear(), m.getMonth()+1, 0).getDate();
+    let cells = ["L","M","M","J","V","S","D"].map(x=>`<div class="dow">${x}</div>`).join("");
+    for (let i=0;i<lead;i++) cells += "<div></div>";
+    for (let d=1; d<=n; d++){
+      const dt = new Date(m.getFullYear(), m.getMonth(), d);
+      const sel = state.date && ymd(dt)===ymd(state.date);
+      cells += `<button ${dayBookable(dt)?"":"disabled"} class="${sel?"sel":""} ${ymd(dt)===ymd(today)?"today":""}" data-d="${d}" aria-label="${longDate(dt)}">${d}</button>`;
+    }
+    const prevOk = m > new Date(today.getFullYear(), today.getMonth(), 1);
+    const nextOk = new Date(m.getFullYear(), m.getMonth()+1, 1) <= maxDay;
+    let slotsHtml = "";
+    if (state.date){
+      slotsHtml = `<div class="tz">${longDate(state.date)} · heure de Paris</div>`;
+      if (state.loading) slotsHtml += `<div class="empty">Chargement des créneaux…</div>`;
+      else if (state.error) slotsHtml += `<div class="empty">${state.error}</div>`;
+      else {
+        const free = freeSlots();
+        slotsHtml += free.length ? `<div class="slots">${free.map(t=>`<button class="${t===state.time?"sel":""}" data-t="${t}">${t}</button>`).join("")}</div>`
+                                 : `<div class="empty">Plus de créneau disponible ce jour-là. Essaie une autre date.</div>`;
+        slotsHtml += `<div style="margin-top:18px"><button class="btn wide" id="next" ${state.time?"":"disabled"}>Continuer</button></div>`;
+      }
+    } else slotsHtml = `<div class="empty">Choisis une date pour voir les créneaux.</div>`;
+    v.innerHTML = pickedBox(false) + `<div class="label">Choisis ta date</div>
+      <div class="cal-head"><button id="pm" ${prevOk?"":"disabled"} aria-label="Mois précédent">‹</button><span>${MONTHS[m.getMonth()]} ${m.getFullYear()}</span><button id="nm" ${nextOk?"":"disabled"} aria-label="Mois suivant">›</button></div>
+      <div class="cal">${cells}</div>${slotsHtml}`;
+    $("#pm").onclick = ()=>{ state.month = new Date(m.getFullYear(), m.getMonth()-1, 1); render(); };
+    $("#nm").onclick = ()=>{ state.month = new Date(m.getFullYear(), m.getMonth()+1, 1); render(); };
+    v.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{ state.date=new Date(m.getFullYear(), m.getMonth(), +b.dataset.d); state.time=null; loadBusy(); });
+    v.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{ state.time=b.dataset.t; render(); });
+    const nx = $("#next"); if (nx) nx.onclick = ()=>go("info");
+  }
+  else if (state.step==="info"){
+    $("#stepTitle").textContent = "Tes informations";
+    const i = state.info;
+    v.innerHTML = pickedBox(true) + `<div class="label">Tes informations</div>
+      <form id="f" novalidate>
+        <div class="field"><label for="prenom">Prénom *</label><input id="prenom" autocomplete="given-name" value="${esc(i.prenom)}"></div>
+        <div class="field"><label for="nom">Nom de famille *</label><input id="nom" autocomplete="family-name" value="${esc(i.nom)}"></div>
+        <div class="field"><label for="tel">Téléphone *</label><input id="tel" type="tel" autocomplete="tel" placeholder="06 12 34 56 78" value="${esc(i.tel)}"></div>
+        <div class="field"><label for="note">Précisions (longueur, couleur des mèches…)</label><textarea id="note">${esc(i.note)}</textarea></div>
+        <div class="err" id="err"></div>
+        <button class="btn wide" type="submit">Voir le récapitulatif</button>
+      </form>`;
+    $("#f").onsubmit = e => {
+      e.preventDefault();
+      const g = id => $("#"+id).value.trim();
+      Object.assign(state.info, {prenom:g("prenom"), nom:g("nom"), tel:g("tel"), note:g("note")});
+      if (!state.info.prenom || !state.info.nom) return $("#err").textContent = "Indique ton prénom et ton nom.";
+      if (state.info.tel.replace(/\D/g,"").length < 9) return $("#err").textContent = "Indique un numéro de téléphone valide.";
+      go("recap");
+    };
+  }
+  else if (state.step==="recap"){
+    $("#stepTitle").textContent = "Récapitulatif";
+    const s = state.svc;
+    v.innerHTML = `<div class="sum">
+        <div class="row"><span>Prestation</span><span>${esc(s.name)}</span></div>
+        <div class="row"><span>Date</span><span>${longDate(state.date)}, ${state.time.replace(":","h")}</span></div>
+        <div class="row"><span>Durée</span><span>${dur(s.min)}</span></div>
+        <div class="row"><span>Total</span><span>${s.price},00 €</span></div>
+        <div class="row"><span>Acompte à régler</span><span>${CONFIG.deposit},00 €</span></div>
+        <div class="row"><span>Solde le jour J</span><span>${s.price-CONFIG.deposit},00 €</span></div>
+      </div>
+      <label style="display:flex;gap:10px;align-items:flex-start;margin:20px 0 8px;font-size:13.5px;color:var(--muted)">
+        <input type="checkbox" id="ok" style="margin-top:3px"> J'ai lu et j'accepte les conditions (retards, annulation, acompte non remboursable).
+      </label>
+      <div class="err" id="err"></div>
+      <button class="btn wide" id="confirm" ${state.sending?"disabled":""}>${state.sending?"Envoi en cours…":"Confirmer ma réservation"}</button>
+      <p class="note">Je te recontacte par message pour l'acompte de ${CONFIG.deposit} €. Ton créneau est définitif une fois l'acompte réglé.</p>`;
+    $("#confirm").onclick = () => {
+      if (!$("#ok").checked) return $("#err").textContent = "Coche la case pour accepter les conditions.";
+      state.sending = true; render();
+      fetch(API_URL, { method:"POST", body: JSON.stringify({ serviceId:s.id, date:ymd(state.date), time:state.time, prenom:state.info.prenom, nom:state.info.nom, tel:state.info.tel, note:state.info.note }) })
+        .then(r=>r.json())
+        .then(r => {
+          state.sending = false;
+          if (r && r.ok) { go("done"); }
+          else if (r && r.reason==="taken") { state.time = null; state.step = "date"; loadBusy(); setTimeout(()=>{ const e=document.querySelector(".tz"); if(e) e.insertAdjacentHTML("afterend",`<div class="err" style="text-align:center">Ce créneau vient d'être pris. Choisis-en un autre.</div>`); }, 50); }
+          else { render(); $("#err").textContent = "La réservation n'a pas pu être envoyée. Vérifie tes informations et réessaie."; }
+        })
+        .catch(() => { state.sending=false; render(); $("#err").textContent = "La réservation n'a pas pu être envoyée. Réessaie dans un instant."; });
+    };
+  }
+  else if (state.step==="done"){
+    $("#stepTitle").textContent = "Réservation envoyée";
+    const s = state.svc;
+    v.innerHTML = `<div style="text-align:center;padding:10px 0 6px">
+        <div class="script" style="font-size:44px;color:var(--accent)">Merci ${esc(state.info.prenom)} !</div>
+        <p style="margin:14px 0 0">Ta demande pour <b style="font-weight:500">${esc(s.name)}</b><br>le ${longDate(state.date)} à ${state.time.replace(":","h")} est bien enregistrée.</p>
+        <p class="note">Je t'écris très vite au ${esc(state.info.tel)} pour l'acompte de ${CONFIG.deposit} €. Pense à préparer tes cheveux et à m'envoyer les photos demandées.</p>
+        <div style="margin-top:20px"><button class="btn ghost" id="again">Faire une autre réservation</button></div>
+      </div>`;
+    $("#again").onclick = () => { Object.assign(state,{svc:null,date:null,time:null,busy:null}); go("svc"); };
+  }
+}
+render();
+</script>
+
+</body>
+</html>
