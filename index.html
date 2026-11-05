@@ -10,17 +10,17 @@
 <style>
 /* Layout: one narrow black column like a mobile booking page — hero, conditions, planning, préparation, then the booking steps (prestation → date & heure → infos → récap). */
 :root{
-  --bg:#0b0a0b; --panel:#141214; --line:#3a3539; --fg:#f4f0ec; --muted:#a39b9f; --accent:#d9c2a7; --ok:#9fd3a8; --warn:#e8a598;
+  --bg:#0b0a0b; --panel:#141214; --line:#3a3539; --fg:#f4f0ec; --muted:#ece6e1; --accent:#d9c2a7; --ok:#9fd3a8; --warn:#e8a598;
   --display:"Bodoni Moda","Didot","Times New Roman",serif;
   --script:"Pinyon Script","Snell Roundhand",cursive;
   --body:"Jost","Helvetica Neue",Arial,sans-serif;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:var(--body);font-weight:300;font-size:15px;line-height:1.55;margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-weight:300;font-size:16px;line-height:1.6;margin:0}
 .wrap{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
 h1,h2,h3{font-weight:400;margin:0;text-wrap:balance}
-.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.eyebrow{font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
 .script{font-family:var(--script);font-weight:400;line-height:1}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -31,12 +31,12 @@ a{color:var(--accent)}
 .hero .eyebrow{display:block;margin-bottom:6px}
 .hero h1{font-family:var(--display);font-size:clamp(54px,17vw,92px);letter-spacing:.04em;line-height:.95}
 .hero .script{display:block;font-size:clamp(38px,11vw,58px);color:var(--accent);margin-top:-14px}
-.hero .sub{font-size:11px;letter-spacing:.5em;text-transform:uppercase;margin-top:8px}
+.hero .sub{font-size:13px;letter-spacing:.5em;text-transform:uppercase;margin-top:8px}
 .portrait{margin:28px auto 0;width:min(230px,62vw);aspect-ratio:3/4;max-width:100%;border-radius:999px 999px 0 0;border:1px solid var(--line);background:radial-gradient(120% 80% at 50% 10%,#2a2427 0%,var(--panel) 60%);display:grid;place-items:center;overflow:hidden}
 .portrait img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
 .intro{display:grid;gap:12px;text-align:center;margin-top:22px}
 .intro h2{font-family:var(--display);font-style:italic;font-size:20px;letter-spacing:.06em;text-transform:uppercase}
-.intro p{margin:0;color:var(--muted);font-size:13.5px;max-width:44ch;margin-inline:auto}
+.intro p{margin:0;color:var(--muted);font-size:16px;max-width:44ch;margin-inline:auto}
 
 /* section titles */
 .sec{margin-top:52px}
@@ -48,12 +48,12 @@ a{color:var(--accent)}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .card{border:1px solid var(--line);background:var(--panel);padding:16px 10px 14px;text-align:center;border-radius:80px 80px 6px 6px;display:grid;align-content:start;gap:8px;min-width:0}
 .card svg{width:28px;height:28px;margin:4px auto 0;stroke:var(--fg)}
-.card h3{font-family:var(--display);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
-.card p{margin:0;font-size:11.5px;line-height:1.45;color:var(--muted)}
+.card h3{font-family:var(--display);font-size:14px;letter-spacing:.12em;text-transform:uppercase}
+.card p{margin:0;font-size:14px;line-height:1.5;color:var(--muted)}
 @media (max-width:430px){.cards{grid-template-columns:1fr}.card{border-radius:6px;text-align:left;grid-template-columns:32px 1fr;column-gap:12px}.card svg{grid-row:span 2;margin:2px 0 0}}
 
 .prep{display:grid;gap:10px;counter-reset:p}
-.prep li{list-style:none;display:grid;grid-template-columns:28px 1fr;gap:10px;font-size:13.5px;color:var(--muted)}
+.prep li{list-style:none;display:grid;grid-template-columns:28px 1fr;gap:10px;font-size:16px;color:var(--muted)}
 .prep li::before{counter-increment:p;content:counter(p);font-family:var(--display);font-size:20px;color:var(--fg);line-height:1.1}
 .prep{padding:0;margin:0}
 
@@ -63,50 +63,50 @@ a{color:var(--accent)}
 .stepbar h2{font-size:15px;font-weight:500;flex:1;text-align:center}
 .back{background:none;border:0;padding:6px;font-size:20px;line-height:1}
 .back[hidden]+h2{margin-right:32px}
-.cat{font-size:13px;margin:18px 0 6px;color:var(--muted);letter-spacing:.04em}
+.cat{font-size:15px;margin:18px 0 6px;color:var(--muted);letter-spacing:.04em}
 .svc{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
 .svc .info{flex:1;min-width:0}
-.svc .name{font-weight:400;font-size:15px}
-.svc .meta{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
-.btn{background:var(--fg);color:var(--bg);border:0;padding:9px 14px;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;border-radius:2px;white-space:nowrap}
-.btn.wide{width:100%;padding:15px;font-size:12px}
+.svc .name{font-weight:400;font-size:17px}
+.svc .meta{font-size:14.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.btn{background:var(--fg);color:var(--bg);border:0;padding:10px 14px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;border-radius:2px;white-space:nowrap}
+.btn.wide{width:100%;padding:15px;font-size:13px}
 .btn.ghost{background:none;color:var(--fg);border:1px solid var(--line)}
 .btn:disabled{opacity:.35;cursor:not-allowed}
 
 .picked{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);background:var(--panel);margin-bottom:22px}
 .picked .t{font-weight:400}
-.picked .m{font-size:12.5px;color:var(--muted)}
+.picked .m{font-size:14px;color:var(--muted)}
 .picked button{background:none;border:0;font-size:18px;color:var(--muted);align-self:flex-start}
-.label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:400}
+.label{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:400}
 
 .cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .cal-head span{font-size:15px;text-transform:capitalize}
 .cal-head button{background:none;border:0;font-size:18px;padding:4px 10px}
 .cal-head button:disabled{opacity:.25}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-variant-numeric:tabular-nums}
-.cal .dow{font-size:11px;color:var(--muted);padding:6px 0}
-.cal button{background:none;border:0;aspect-ratio:1;max-width:100%;border-radius:50%;font-size:14px}
-.cal button:disabled{color:#4d474b;cursor:default}
+.cal .dow{font-size:13px;color:var(--muted);padding:6px 0}
+.cal button{background:none;border:0;aspect-ratio:1;max-width:100%;border-radius:50%;font-size:16px}
+.cal button:disabled{color:#6f686c;cursor:default}
 .cal button.sel{background:var(--fg);color:var(--bg)}
 .cal button.today:not(.sel){box-shadow:inset 0 0 0 1px var(--line)}
-.tz{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:center;margin:16px 0 12px}
+.tz{font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:center;margin:16px 0 12px}
 .slots{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.slots button{background:none;border:1px solid var(--line);padding:13px 0;font-variant-numeric:tabular-nums;font-size:14px}
+.slots button{background:none;border:1px solid var(--line);padding:13px 0;font-variant-numeric:tabular-nums;font-size:16px}
 .slots button.sel{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.empty{color:var(--muted);font-size:13.5px;text-align:center;padding:18px 0}
+.empty{color:var(--muted);font-size:15px;text-align:center;padding:18px 0}
 
 .field{display:grid;gap:4px;margin-bottom:18px}
-.field label{font-size:12.5px;color:var(--muted)}
+.field label{font-size:14.5px;color:var(--muted)}
 .field input,.field textarea{background:none;border:0;border-bottom:1px solid var(--line);color:var(--fg);font:inherit;padding:8px 0;border-radius:0}
 .field textarea{resize:vertical;min-height:60px}
-.err{color:var(--warn);font-size:12.5px;min-height:1em}
+.err{color:var(--warn);font-size:14px;min-height:1em}
 
 .sum{border-top:1px solid var(--line)}
 .sum .row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
 .sum .row span:first-child{color:var(--muted)}
 .msg{white-space:pre-wrap;background:var(--panel);border:1px solid var(--line);padding:14px;font-size:13px;margin:18px 0 12px;user-select:all}
 .actions{display:grid;gap:10px}
-.note{font-size:12.5px;color:var(--muted);text-align:center;margin-top:10px}
+.note{font-size:14.5px;color:var(--muted);text-align:center;margin-top:10px}
 .toast{color:var(--ok);font-size:13px;text-align:center;min-height:1.2em;margin-top:6px}
 
 /* owner */
@@ -117,7 +117,10 @@ a{color:var(--accent)}
 .owner .row2{display:flex;gap:8px;flex-wrap:wrap}
 .status{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
 
-footer{text-align:center;margin-top:60px;color:var(--muted);font-size:12px;display:grid;gap:4px}
+.pay{display:grid;gap:10px;margin-top:22px;text-align:left}
+.pay .btn{display:block;text-align:center;text-decoration:none}
+.pay .btn.paypal{background:#ffc439;color:#111}
+footer{text-align:center;margin-top:60px;color:var(--muted);font-size:14px;display:grid;gap:4px}
 footer .script{font-size:30px;color:var(--fg)}
 @media (prefers-reduced-motion:no-preference){.view{animation:in .35s ease both}@keyframes in{from{opacity:.4;transform:translateY(6px)}}}
 </style>
@@ -208,6 +211,10 @@ footer .script{font-size:30px;color:var(--fg)}
 <script>
 // Adresse de l'API Google (Apps Script) qui enregistre les réservations
 const API_URL = "https://script.google.com/macros/s/AKfycbzJSi32cCxxZucKlQGJ9fjxLrVIykysgbJ3jrr-agMxU0VEY_DbZlYlvnTt8B6gAcxl/exec";
+// Liens de paiement de l'acompte (à remplir) :
+//  - STRIPE : ton « Payment Link » Stripe de 15 € (https://buy.stripe.com/...)
+//  - PAYPAL : ton pseudo PayPal.me (ex. "houseofpony" pour paypal.me/houseofpony)
+const PAYMENT = { stripe: "", paypal: "" };
 const CONFIG = {"instagram":"houseofpony","openDays":[0,1,2,3,4,5,6],"open":"10:00","close":"19:00","stepMin":30,"bookAheadDays":60,"deposit":15};
 const SERVICES = [
   { id: "classique",      name: "Ponytail classique",     min: 180, price: 50 },
@@ -351,12 +358,12 @@ function render(){
         <div class="row"><span>Acompte à régler</span><span>${CONFIG.deposit},00 €</span></div>
         <div class="row"><span>Solde le jour J</span><span>${s.price-CONFIG.deposit},00 €</span></div>
       </div>
-      <label style="display:flex;gap:10px;align-items:flex-start;margin:20px 0 8px;font-size:13.5px;color:var(--muted)">
+      <label style="display:flex;gap:10px;align-items:flex-start;margin:20px 0 8px;font-size:15px;color:var(--muted)">
         <input type="checkbox" id="ok" style="margin-top:3px"> J'ai lu et j'accepte les conditions (retards, annulation, acompte non remboursable).
       </label>
       <div class="err" id="err"></div>
       <button class="btn wide" id="confirm" ${state.sending?"disabled":""}>${state.sending?"Envoi en cours…":"Confirmer ma réservation"}</button>
-      <p class="note">Je te recontacte par message pour l'acompte de ${CONFIG.deposit} €. Ton créneau est définitif une fois l'acompte réglé.</p>`;
+      <p class="note">Après la confirmation, tu pourras régler l'acompte de ${CONFIG.deposit} €. Ton créneau est définitif une fois l'acompte réglé.</p>`;
     $("#confirm").onclick = () => {
       if (!$("#ok").checked) return $("#err").textContent = "Coche la case pour accepter les conditions.";
       state.sending = true; render();
@@ -377,7 +384,14 @@ function render(){
     v.innerHTML = `<div style="text-align:center;padding:10px 0 6px">
         <div class="script" style="font-size:44px;color:var(--accent)">Merci ${esc(state.info.prenom)} !</div>
         <p style="margin:14px 0 0">Ta demande pour <b style="font-weight:500">${esc(s.name)}</b><br>le ${longDate(state.date)} à ${state.time.replace(":","h")} est bien enregistrée.</p>
-        <p class="note">Je t'écris très vite au ${esc(state.info.tel)} pour l'acompte de ${CONFIG.deposit} €. Pense à préparer tes cheveux et à m'envoyer les photos demandées.</p>
+        ${(PAYMENT.stripe||PAYMENT.paypal) ? `
+        <div class="pay">
+          <div class="label" style="text-align:center;margin:0">Dernière étape : règle l'acompte de ${CONFIG.deposit} € pour confirmer ton rendez-vous</div>
+          ${PAYMENT.stripe?`<a class="btn wide" href="${PAYMENT.stripe}" target="_blank" rel="noopener">Payer ${CONFIG.deposit} € par carte</a>`:""}
+          ${PAYMENT.paypal?`<a class="btn wide paypal" href="https://www.paypal.com/paypalme/${encodeURIComponent(PAYMENT.paypal)}/${CONFIG.deposit}EUR" target="_blank" rel="noopener">Payer ${CONFIG.deposit} € avec PayPal</a>`:""}
+          <p class="note" style="margin:0">Indique ton nom dans le paiement. Sans acompte reçu sous 24 h, le créneau peut être libéré.</p>
+        </div>` : `<p class="note">Je t'écris très vite au ${esc(state.info.tel)} pour l'acompte de ${CONFIG.deposit} €.</p>`}
+        <p class="note">Pense à préparer tes cheveux et à m'envoyer les photos demandées.</p>
         <div style="margin-top:20px"><button class="btn ghost" id="again">Faire une autre réservation</button></div>
       </div>`;
     $("#again").onclick = () => { Object.assign(state,{svc:null,date:null,time:null,busy:null}); go("svc"); };
