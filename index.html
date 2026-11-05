@@ -246,7 +246,7 @@ document.querySelectorAll(".ig").forEach(e=>e.textContent="@"+CONFIG.instagram);
   $("#horaires").textContent = closed.length ? `Du ${names[0]} au ${names[names.length-1]}, ${o} – ${c}. Fermé le ${closed.join(" et le ")}.` : `Tous les jours, du lundi au dimanche, de ${o} à ${c}.`;
 })();
 
-const state = { step:"svc", svc:null, month:null, date:null, time:null, busy:null, loading:false, error:"", info:{prenom:"",nom:"",tel:"",note:""}, sending:false };
+const state = { step:"svc", svc:null, month:null, date:null, time:null, busy:null, loading:false, error:"", info:{prenom:"",nom:"",tel:"",email:"",note:""}, sending:false };
 const today = new Date(); today.setHours(0,0,0,0);
 const maxDay = new Date(today); maxDay.setDate(maxDay.getDate()+CONFIG.bookAheadDays);
 state.month = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -334,6 +334,7 @@ function render(){
         <div class="field"><label for="prenom">Prénom *</label><input id="prenom" autocomplete="given-name" value="${esc(i.prenom)}"></div>
         <div class="field"><label for="nom">Nom de famille *</label><input id="nom" autocomplete="family-name" value="${esc(i.nom)}"></div>
         <div class="field"><label for="tel">Téléphone *</label><input id="tel" type="tel" autocomplete="tel" placeholder="06 12 34 56 78" value="${esc(i.tel)}"></div>
+        <div class="field"><label for="email">Adresse e-mail *</label><input id="email" type="email" autocomplete="email" inputmode="email" placeholder="prenom@exemple.com" value="${esc(i.email)}"></div>
         <div class="field"><label for="note">Précisions (longueur, couleur des mèches…)</label><textarea id="note">${esc(i.note)}</textarea></div>
         <div class="err" id="err"></div>
         <button class="btn wide" type="submit">Voir le récapitulatif</button>
@@ -341,9 +342,10 @@ function render(){
     $("#f").onsubmit = e => {
       e.preventDefault();
       const g = id => $("#"+id).value.trim();
-      Object.assign(state.info, {prenom:g("prenom"), nom:g("nom"), tel:g("tel"), note:g("note")});
+      Object.assign(state.info, {prenom:g("prenom"), nom:g("nom"), tel:g("tel"), email:g("email"), note:g("note")});
       if (!state.info.prenom || !state.info.nom) return $("#err").textContent = "Indique ton prénom et ton nom.";
       if (state.info.tel.replace(/\D/g,"").length < 9) return $("#err").textContent = "Indique un numéro de téléphone valide.";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(state.info.email)) return $("#err").textContent = "Indique une adresse e-mail valide.";
       go("recap");
     };
   }
@@ -367,7 +369,7 @@ function render(){
     $("#confirm").onclick = () => {
       if (!$("#ok").checked) return $("#err").textContent = "Coche la case pour accepter les conditions.";
       state.sending = true; render();
-      fetch(API_URL, { method:"POST", body: JSON.stringify({ serviceId:s.id, date:ymd(state.date), time:state.time, prenom:state.info.prenom, nom:state.info.nom, tel:state.info.tel, note:state.info.note }) })
+      fetch(API_URL, { method:"POST", body: JSON.stringify({ serviceId:s.id, date:ymd(state.date), time:state.time, prenom:state.info.prenom, nom:state.info.nom, tel:state.info.tel, email:state.info.email, note:state.info.note }) })
         .then(r=>r.json())
         .then(r => {
           state.sending = false;
@@ -391,6 +393,7 @@ function render(){
           ${PAYMENT.paypal?`<a class="btn wide paypal" href="https://www.paypal.com/paypalme/${encodeURIComponent(PAYMENT.paypal)}/${CONFIG.deposit}EUR" target="_blank" rel="noopener">Payer ${CONFIG.deposit} € avec PayPal</a>`:""}
           <p class="note" style="margin:0">Indique ton nom dans le paiement. Sans acompte reçu sous 24 h, le créneau peut être libéré.</p>
         </div>` : `<p class="note">Je t'écris très vite au ${esc(state.info.tel)} pour l'acompte de ${CONFIG.deposit} €.</p>`}
+        <p class="note">Un e-mail de confirmation t'a été envoyé à <b style="font-weight:500">${esc(state.info.email)}</b> (pense à regarder dans tes spams).</p>
         <p class="note">Pense à préparer tes cheveux et à m'envoyer les photos demandées.</p>
         <div style="margin-top:20px"><button class="btn ghost" id="again">Faire une autre réservation</button></div>
       </div>`;
