@@ -284,7 +284,7 @@ function pickedBox(withTime){
 
 function render(){
   const v = $("#view"); v.classList.remove("view"); void v.offsetWidth; v.classList.add("view");
-  $("#back").hidden = state.step==="svc" || state.step==="done";
+  $("#back").hidden = ["svc","done","check","confirmed","pending"].includes(state.step);
   if (state.step==="svc"){
     $("#stepTitle").textContent = "Sélectionner un rendez-vous";
     v.innerHTML = `<div class="cat">Ponytails &amp; coiffures</div>` + SERVICES.map(s=>`
@@ -364,8 +364,8 @@ function render(){
         <input type="checkbox" id="ok" style="margin-top:3px"> J'ai lu et j'accepte les conditions (retards, annulation, acompte non remboursable).
       </label>
       <div class="err" id="err"></div>
-      <button class="btn wide" id="confirm" ${state.sending?"disabled":""}>${state.sending?"Envoi en cours…":"Confirmer ma réservation"}</button>
-      <p class="note">Après la confirmation, tu pourras régler l'acompte de ${CONFIG.deposit} €. Ton créneau est définitif une fois l'acompte réglé.</p>`;
+      <button class="btn wide" id="confirm" ${state.sending?"disabled":""}>${state.sending?"Envoi en cours…":"Continuer vers le paiement"}</button>
+      <p class="note">À l'étape suivante, tu règles l'acompte de ${CONFIG.deposit} € par carte. Ta réservation est confirmée seulement après le paiement.</p>`;
     $("#confirm").onclick = () => {
       if (!$("#ok").checked) return $("#err").textContent = "Coche la case pour accepter les conditions.";
       state.sending = true; render();
@@ -373,7 +373,7 @@ function render(){
         .then(r=>r.json())
         .then(r => {
           state.sending = false;
-          if (r && r.ok) { go("done"); }
+          if (r && r.ok) { state.payUrl = r.payUrl || PAYMENT.stripe; state.holdMin = r.holdMin; go("done"); }
           else if (r && r.reason==="taken") { state.time = null; state.step = "date"; loadBusy(); setTimeout(()=>{ const e=document.querySelector(".tz"); if(e) e.insertAdjacentHTML("afterend",`<div class="err" style="text-align:center">Ce créneau vient d'être pris. Choisis-en un autre.</div>`); }, 50); }
           else { render(); $("#err").textContent = "La réservation n'a pas pu être envoyée. Vérifie tes informations et réessaie."; }
         })
@@ -381,25 +381,61 @@ function render(){
     };
   }
   else if (state.step==="done"){
-    $("#stepTitle").textContent = "Réservation envoyée";
+    $("#stepTitle").textContent = "Paiement de l'acompte";
     const s = state.svc;
     v.innerHTML = `<div style="text-align:center;padding:10px 0 6px">
-        <div class="script" style="font-size:44px;color:var(--accent)">Merci ${esc(state.info.prenom)} !</div>
-        <p style="margin:14px 0 0">Ta demande pour <b style="font-weight:500">${esc(s.name)}</b><br>le ${longDate(state.date)} à ${state.time.replace(":","h")} est bien enregistrée.</p>
-        ${(PAYMENT.stripe||PAYMENT.paypal) ? `
+        <div class="script" style="font-size:40px;color:var(--accent)">Dernière étape</div>
+        <p style="margin:14px 0 0"><b style="font-weight:500">${esc(s.name)}</b><br>le ${longDate(state.date)} à ${state.time.replace(":","h")}</p>
         <div class="pay">
-          <div class="label" style="text-align:center;margin:0">Dernière étape : règle l'acompte de ${CONFIG.deposit} € pour confirmer ton rendez-vous</div>
-          ${PAYMENT.stripe?`<a class="btn wide" href="${PAYMENT.stripe}" target="_blank" rel="noopener">Payer ${CONFIG.deposit} € par carte</a>`:""}
-          ${PAYMENT.paypal?`<a class="btn wide paypal" href="https://www.paypal.com/paypalme/${encodeURIComponent(PAYMENT.paypal)}/${CONFIG.deposit}EUR" target="_blank" rel="noopener">Payer ${CONFIG.deposit} € avec PayPal</a>`:""}
-          <p class="note" style="margin:0">Indique ton nom dans le paiement. Sans acompte reçu sous 24 h, le créneau peut être libéré.</p>
-        </div>` : `<p class="note">Je t'écris très vite au ${esc(state.info.tel)} pour l'acompte de ${CONFIG.deposit} €.</p>`}
-        <p class="note">Un e-mail de confirmation t'a été envoyé à <b style="font-weight:500">${esc(state.info.email)}</b> (pense à regarder dans tes spams).</p>
+          <div class="label" style="text-align:center;margin:0">Ton créneau est bloqué ${state.holdMin||30} minutes. Règle l'acompte de ${CONFIG.deposit} € pour confirmer ta réservation.</div>
+          <a class="btn wide" href="${esc(state.payUrl)}">Payer ${CONFIG.deposit} € et confirmer</a>
+          <p class="note" style="margin:0">Sans paiement, aucune réservation n'est confirmée et le créneau est libéré. Tu recevras ton e-mail de confirmation juste après le paiement.</p>
+        </div>
+      </div>`;
+  }
+  else if (state.step==="check"){
+    $("#stepTitle").textContent = "Vérification du paiement";
+    v.innerHTML = `<div style="text-align:center;padding:30px 0"><p>Vérification de ton paiement…</p></div>`;
+  }
+  else if (state.step==="confirmed"){
+    $("#stepTitle").textContent = "Réservation confirmée";
+    const b = state.booking || {};
+    const d = b.date ? new Date(b.date+"T12:00:00") : null;
+    v.innerHTML = `<div style="text-align:center;padding:10px 0 6px">
+        <div class="script" style="font-size:44px;color:var(--accent)">Merci ${esc(b.prenom||"")} !</div>
+        <p style="margin:14px 0 0">Acompte reçu ✅ Ton rendez-vous est confirmé :<br><b style="font-weight:500">${esc(b.presta||"")}</b>${d?`<br>le ${longDate(d)} à ${String(b.start).replace(":","h")}`:""}</p>
+        <p class="note">Un e-mail de confirmation t'a été envoyé${b.email?` à <b style="font-weight:500">${esc(b.email)}</b>`:""}. S'il n'est pas dans ta boîte de réception, regarde dans tes spams.</p>
         <p class="note">Pense à préparer tes cheveux et à m'envoyer les photos demandées.</p>
         <div style="margin-top:20px"><button class="btn ghost" id="again">Faire une autre réservation</button></div>
       </div>`;
     $("#again").onclick = () => { Object.assign(state,{svc:null,date:null,time:null,busy:null}); go("svc"); };
   }
+  else if (state.step==="pending"){
+    $("#stepTitle").textContent = "Paiement en cours de vérification";
+    v.innerHTML = `<div style="text-align:center;padding:10px 0 6px">
+        <p>Je n'ai pas encore la confirmation de ton paiement.</p>
+        <p class="note">Si tu as bien payé, pas d'inquiétude : ta réservation sera confirmée automatiquement d'ici quelques minutes et tu recevras un e-mail. Sinon, ta réservation n'est pas confirmée.</p>
+        <div style="margin-top:20px"><button class="btn ghost" id="again">Retour à l'accueil</button></div>
+      </div>`;
+    $("#again").onclick = () => { Object.assign(state,{svc:null,date:null,time:null,busy:null}); go("svc"); };
+  }
 }
+(function(){
+  const sid = new URLSearchParams(location.search).get("paid");
+  if (!sid) return;
+  history.replaceState(null, "", location.pathname);
+  state.step = "check";
+  const tryConfirm = n => fetch(API_URL+"?action=confirm&session="+encodeURIComponent(sid))
+    .then(r=>r.json())
+    .then(r => {
+      if (r && r.ok) { state.booking = r; go("confirmed"); }
+      else if (n > 0) setTimeout(()=>tryConfirm(n-1), 3000);
+      else go("pending");
+    })
+    .catch(() => { if (n > 0) setTimeout(()=>tryConfirm(n-1), 3000); else go("pending"); });
+  tryConfirm(3);
+  setTimeout(()=>$("#book").scrollIntoView({block:"start"}), 100);
+})();
 render();
 </script>
 
